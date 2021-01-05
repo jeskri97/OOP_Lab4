@@ -1,2 +1,10 @@
-﻿  motorVehicle.cpp
-  MotorVehicle.vcxproj -> C:\Users\bruh1\Documents\OOP\Lab4\MotorVehicle\Debug\MotorVehicle.exe
+﻿  main.cpp
+  motorVehicle.cpp
+C:\Users\Hem\Documents\GitE\OOP_Lab4\Lab4\MotorVehicle\MotorVehicle\motorVehicle.cpp(217,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Hem\Documents\GitE\OOP_Lab4\Lab4\MotorVehicle\MotorVehicle\motorVehicle.cpp(266,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Hem\Documents\GitE\OOP_Lab4\Lab4\MotorVehicle\MotorVehicle\motorVehicle.cpp(311,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Hem\Documents\GitE\OOP_Lab4\Lab4\MotorVehicle\MotorVehicle\motorVehicle.cpp(312,10): warning C4129: 'C': unrecognized character escape sequence
+C:\Users\Hem\Documents\GitE\OOP_Lab4\Lab4\MotorVehicle\MotorVehicle\motorVehicle.cpp(411,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Hem\Documents\GitE\OOP_Lab4\Lab4\MotorVehicle\MotorVehicle\motorVehicle.cpp(412,10): warning C4129: 'V': unrecognized character escape sequence
+  Generating Code...
+  MotorVehicle.vcxproj -> C:\Users\Hem\Documents\GitE\OOP_Lab4\Lab4\MotorVehicle\Debug\MotorVehicle.exe
