@@ -67,11 +67,13 @@ private:
 	Body body;
 	Person owner;
 	float* tireDiameters;
+	//float* tireDiameters = new float[0];
 	int tireAmount;
 	std::string model;
+	void fixTires();
 public:
 	// Constructors
-	MotorVehicle(Engine engine, Body body, Person owner, float* tireDiameter, int tireAmount, std::string model);
+	MotorVehicle(Engine engine, Body body, Person owner, int tireAmount, std::string model);
 	MotorVehicle();
 	// Destructor
 	~MotorVehicle();
@@ -92,12 +94,11 @@ public:
 };
 
 class VehicleLists {
-private:
+public:
 	std::vector<Engine> engineList;
 	std::vector<Body> bodyList;
 	std::vector<Person> ownerList;
-	std::vector<MotorVehicle> MVList;
-public:
+	std::vector<MotorVehicle*> MVList;
 	// Engine List
 	void addEngine();
 	void changeEngine();
@@ -118,4 +119,6 @@ public:
 	void changeVehicle();
 	void deleteVehicle();
 	void printVehicleList();
+
+	void exit();
 };

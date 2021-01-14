@@ -107,21 +107,35 @@ void Person::print() {
 }
 
 // -----< Constructors >---------------------------------------------------------------------------------------------------------
-MotorVehicle::MotorVehicle(Engine engine, Body body, Person owner, float* tireDiameters, int tireAmount, std::string model) {
+MotorVehicle::MotorVehicle(Engine engine, Body body, Person owner, int tireAmount, std::string model) {
 	this->engine = engine;
 	this->body = body;
 	this->owner = owner;
-	this->tireDiameters = tireDiameters;
 	this->tireAmount = tireAmount;
 	this->model = model;
+	this->tireDiameters = new float[tireAmount];
+	this->fixTires();
 }
 MotorVehicle::MotorVehicle() {
-	this->tireDiameters = NULL;
+	this->tireDiameters = nullptr;
 	this->tireAmount = 0;
 }
 // -----< Destructor >-----------------------------------------------------------------------------------------------------------
 MotorVehicle::~MotorVehicle() {
-	delete this->tireDiameters;
+	//printf("\nDestructor called\n");
+	if (this->tireDiameters != nullptr) {
+		delete[] tireDiameters;
+		this->tireDiameters = nullptr;
+	}
+}
+// -----< Private >--------------------------------------------------------------------------------------------------------------
+void MotorVehicle::fixTires() {
+	float diameter;
+	for (int i = 0; i < this->tireAmount; i++) {
+		printf("Insert the diameter of tire %i: ", i + 1);
+		std::cin >> diameter;
+		this->tireDiameters[i] = diameter;
+	}
 }
 // -----< Setters >--------------------------------------------------------------------------------------------------------------
 void MotorVehicle::setEngine(Engine engine) {
@@ -135,13 +149,8 @@ void MotorVehicle::setOwner(Person owner) {
 }
 void MotorVehicle::setTires(int tireAmount) {
 	this->tireAmount = tireAmount;
-	this->tireDiameters = (float*)malloc(tireAmount * sizeof(float));
-	for (int i = 0; i < tireAmount; i++) {
-		float diameter = 0.0f;
-		printf("Insert the diameter of tire %i: ", i + 1);
-		std::cin >> diameter;
-		this->tireDiameters[i] = diameter;
-	}
+	this->tireDiameters = new float[tireAmount];
+	this->fixTires();
 }
 void MotorVehicle::setModel(std::string model) {
 	this->model = model;
@@ -229,12 +238,16 @@ void VehicleLists::deleteEngine() {
 		printf("\nERROR: List empty\n");
 }
 void VehicleLists::printEngineList() {
-	printf("\n--------------------------------------------------\n");
-	for (int i = 0; i < engineList.size(); i++) {
-		printf("\tEngine %i\n", i + 1);
-		engineList[i].print();
+	if (engineList.size() > 0) {
+		printf("\n--------------------------------------------------");
+		for (int i = 0; i < engineList.size(); i++) {
+			printf("\n\tEngine %i\n", i + 1);
+			engineList[i].print();
+		}
+		printf("--------------------------------------------------\n");
 	}
-	printf("--------------------------------------------------\n");
+	else
+		printf("No Engines in list\n");
 }
 // -----< Body List >------------------------------------------------------------------------------------------------------------
 void VehicleLists::addBody() {
@@ -280,7 +293,7 @@ void VehicleLists::changeBody() {
 void VehicleLists::deleteBody() {
 	int index;
 	if (bodyList.size() > 0) {
-		printf("Choose an car body to delete: ");
+		printf("Choose a car body to delete: ");
 		std::cin >> index;
 		if (index > bodyList.size() || index < 0)
 			printf("\nINVALID INDEX: Index outside scope\n");
@@ -294,12 +307,16 @@ void VehicleLists::deleteBody() {
 		printf("\nERROR: List empty\n");
 }
 void VehicleLists::printBodyList() {
-	printf("\n--------------------------------------------------\n");
-	for (int i = 0; i < bodyList.size(); i++) {
-		printf("\tCar body %i\n", i + 1);
-		bodyList[i].print();
+	if (bodyList.size() > 0) {
+		printf("\n--------------------------------------------------");
+		for (int i = 0; i < bodyList.size(); i++) {
+			printf("\n\tCar body %i\n", i + 1);
+			bodyList[i].print();
+		}
+		printf("--------------------------------------------------\n");
 	}
-	printf("--------------------------------------------------\n");
+	else
+		printf("No Car bodies in list\n");
 }
 // -----< Customer List >--------------------------------------------------------------------------------------------------------
 void VehicleLists::addCustomer() {
@@ -342,7 +359,7 @@ void VehicleLists::changeCustomer() {
 void VehicleLists::deleteCustomer() {
 	int index;
 	if (ownerList.size() > 0) {
-		printf("Choose an customer to delete: ");
+		printf("Choose a customer to delete: ");
 		std::cin >> index;
 		if (index > ownerList.size() || index < 0)
 			printf("\nINVALID INDEX: Index outside scope\n");
@@ -355,12 +372,16 @@ void VehicleLists::deleteCustomer() {
 		printf("\nERROR: List empty\n");
 }
 void VehicleLists::printCustomerList() {
-	printf("\n--------------------------------------------------\n");
-	for (int i = 0; i < ownerList.size(); i++) {
-		printf("\Customer %i\n", i + 1);
-		ownerList[i].print();
+	if (ownerList.size() > 0) {
+		printf("\n--------------------------------------------------");
+		for (int i = 0; i < ownerList.size(); i++) {
+			printf("\n\tCustomer %i\n", i + 1);
+			ownerList[i].print();
+		}
+		printf("--------------------------------------------------\n");
 	}
-	printf("--------------------------------------------------\n");
+	else
+		printf("No Customers in list\n");
 }
 // -----< Vehicle List >---------------------------------------------------------------------------------------------------------
 void VehicleLists::addVehicle() {
@@ -372,93 +393,239 @@ void VehicleLists::addVehicle() {
 	float* tireDiameters;
 	int tireAmount;
 	std::string model;
-	printf("\n1: Add existing Engine\n2: Create and add new Engine\n\ninput> ");
-	std::cin >> input;
-	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-	switch (input)
-	{
-	case '1':
-		this->printEngineList();
-		printf("Select an Engine number: ");
-		std::cin >> index;
-		engine = engineList[index - 1];
-		break;
-	case '2':
-		this->addEngine();
-		engine = engineList.back();
-		break;
-	default:
-		printf("invalid choice\n");
-		break;
-	}
-	input = '\0';
-	printf("\n1: Add existing car body\n2: Create and add new car body\n\ninput> ");
-	std::cin >> input;
-	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-	switch (input)
-	{
-	case '1':
-		this->printBodyList();
-		printf("Select an car body number: ");
-		std::cin >> index;
-		body = bodyList[index - 1];
-		break;
-	case '2':
-		this->addBody();
-		body = bodyList.back();
-		break;
-	default:
-		printf("invalid choice\n");
-		break;
-	}
-	input = '\0';
-	printf("\n1: Add existing Customer\n2: Create and add new Customer\n\ninput> ");
-	std::cin >> input;
-	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-	switch (input)
-	{
-	case '1':
-		this->printCustomerList();
-		printf("Select an Customer number: ");
-		std::cin >> index;
-		owner = ownerList[index - 1];
-		break;
-	case '2':
-		this->addCustomer();
-		owner = ownerList.back();
-		break;
-	default:
-		printf("invalid choice\n");
-		break;
-	}
-	printf("\nInsert tire amount: ");
-	std::cin >> tireAmount;
+	bool validChoice = false;
 
-	tireDiameters = (float*)malloc(tireAmount * sizeof(float));
-	for (int i = 0; i < tireAmount; i++) {
-		float diameter = 0.0f;
-		printf("Insert the diameter of tire %i: ", i + 1);
-		std::cin >> diameter;
-		tireDiameters[i] = diameter;
-	}
-
-	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 	printf("\nName of car Model: ");
 	std::getline(std::cin, model);
 
-	MVList.push_back(MotorVehicle(engine, body, owner, tireDiameters, tireAmount, model));
+	while (!validChoice) {
+		printf("\n1: Add existing Engine\n2: Create and add new Engine\n\ninput> ");
+		std::cin >> input;
+		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		switch (input)
+		{
+		case '1':
+			this->printEngineList();
+			printf("Select an Engine number: ");
+			std::cin >> index;
+			engine = engineList[index - 1];
+			validChoice = true;
+			break;
+		case '2':
+			this->addEngine();
+			engine = engineList.back();
+			validChoice = true;
+			break;
+		default:
+			printf("invalid choice\n");
+			break;
+		}
+	}
+	input = '\0'; 
+	validChoice = false;
+	while (!validChoice) {
+		printf("\n1: Add existing car body\n2: Create and add new car body\n\ninput> ");
+		std::cin >> input;
+		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		switch (input)
+		{
+		case '1':
+			this->printBodyList();
+			printf("Select a car body number: ");
+			std::cin >> index;
+			body = bodyList[index - 1];
+			validChoice = true;
+			break;
+		case '2':
+			this->addBody();
+			body = bodyList.back();
+			validChoice = true;
+			break;
+		default:
+			printf("invalid choice\n");
+			break;
+		}
+	}
+	input = '\0';
+	validChoice = false;
+	while (!validChoice) {
+		printf("\n1: Add existing Customer\n2: Create and add new Customer\n\ninput> ");
+		std::cin >> input;
+		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		switch (input)
+		{
+		case '1':
+			this->printCustomerList();
+			printf("Select a Customer number: ");
+			std::cin >> index;
+			owner = ownerList[index - 1];
+			validChoice = true;
+			break;
+		case '2':
+			this->addCustomer();
+			owner = ownerList.back();
+			validChoice = true;
+			break;
+		default:
+			printf("invalid choice\n");
+			break;
+		}
+	}
+	printf("\nInsert tire amount: ");
+	std::cin >> tireAmount;
+	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+	MotorVehicle* m = new MotorVehicle(engine, body, owner, tireAmount, model);
+	MVList.push_back(m);
 }
 void VehicleLists::changeVehicle() {
-	std::cout << "changeVehicle()\n";
+	char input;
+	int index, vehicleIndex;
+	int tireAmount;
+	std::string model;
+	bool validChoice = false;
+
+	if (MVList.size() > 0) {
+		printf("Choose a Vehicle to change: ");
+		std::cin >> vehicleIndex;
+		if (vehicleIndex > MVList.size() || vehicleIndex < 0)
+			printf("\nINVALID INDEX: Index outside scope\n");
+		else {
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			printf("\nName of car Model: ");
+			std::getline(std::cin, model);
+
+			while (!validChoice) {
+				printf("\n1: Change to an existing Engine\n2: Create and change to a new Engine\n0: Keep current Engine\n\ninput> ");
+				std::cin >> input;
+				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+				switch (input)
+				{
+				case '1':
+					this->printEngineList();
+					printf("Select an Engine number: ");
+					std::cin >> index;
+					MVList[vehicleIndex - 1]->setEngine(engineList[index - 1]);
+					validChoice = true;
+					break;
+				case '2':
+					this->addEngine();
+					MVList[vehicleIndex - 1]->setEngine(engineList.back());
+					validChoice = true;
+					break;
+				case '0':
+					validChoice = true;
+					break;
+				default:
+					printf("invalid choice\n");
+					break;
+				}
+			}
+			input = '\0';
+			validChoice = false;
+			while (!validChoice) {
+				printf("\n1: Change to an existing car body\n2: Create and change to a new car body\n0: Keep current car body\n\ninput> ");
+				std::cin >> input;
+				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+				switch (input)
+				{
+				case '1':
+					this->printBodyList();
+					printf("Select a car body number: ");
+					std::cin >> index;
+					MVList[vehicleIndex - 1]->setBody(bodyList[index - 1]);
+					validChoice = true;
+					break;
+				case '2':
+					this->addBody();
+					MVList[vehicleIndex - 1]->setBody(bodyList.back());
+					validChoice = true;
+					break;
+				case '0':
+					validChoice = true;
+					break;
+				default:
+					printf("invalid choice\n");
+					break;
+				}
+			}
+			input = '\0';
+			validChoice = false;
+			while (!validChoice) {
+				printf("\n1: Change to an existing Customer\n2: Create and change to a new Customer\n0: Keep current Customer\n\ninput> ");
+				std::cin >> input;
+				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+				switch (input)
+				{
+				case '1':
+					this->printCustomerList();
+					printf("Select a Customer number: ");
+					std::cin >> index;
+					MVList[vehicleIndex - 1]->setOwner(ownerList[index - 1]);
+					validChoice = true;
+					break;
+				case '2':
+					this->addCustomer();
+					MVList[vehicleIndex - 1]->setOwner(ownerList.back());
+					validChoice = true;
+					break;
+				case '0':
+					validChoice = true;
+					break;
+				default:
+					printf("invalid choice\n");
+					break;
+				}
+			}
+			printf("\nInsert tire amount: ");
+			std::cin >> tireAmount;
+			MVList[vehicleIndex - 1]->setTires(tireAmount);
+		}
+	}
+	else
+		printf("\nERROR: List empty\n");
 }
 void VehicleLists::deleteVehicle() {
-	std::cout << "deleteVehicle()\n";
+	int index;
+	if (MVList.size() > 0) {
+		printf("Choose a Vehicle to delete: ");
+		std::cin >> index;
+		if (index > MVList.size() || index < 0)
+			printf("\nINVALID INDEX: Index outside scope\n");
+		else {
+			MVList.erase(MVList.begin() + index - 1);
+			printf("Customer %i removed\n", index);
+		}
+	}
+	else
+		printf("\nERROR: List empty\n");
 }
 void VehicleLists::printVehicleList() {
-	printf("\n--------------------------------------------------\n");
-	for (int i = 0; i < engineList.size(); i++) {
-		printf("\Vehicle %i\n", i + 1);
-		MVList[i].print();
+	if (MVList.size() > 1) {
+		printf("\n--------------------------------------------------");
+		for (int i = 0; i < engineList.size(); i++) {
+			printf("\n\tVehicle %i\n", i + 1);
+			MVList[i]->print();
+		}
+		printf("--------------------------------------------------\n");
 	}
-	printf("--------------------------------------------------\n");
+	else if (MVList.size() == 1) {
+		printf("\n--------------------------------------------------");
+		printf("\n\tVehicle 1\n");
+		MVList[0]->print();
+		printf("--------------------------------------------------\n");
+	}
+	else
+		printf("No Vehicles in list\n");
+}
+
+void VehicleLists::exit() {
+	if (MVList.size() > 1) {
+		for (int i = 0; i < engineList.size(); i++) {
+			MVList[i]->~MotorVehicle();
+		}
+	}
+	else if (MVList.size() == 1) {
+		MVList[0]->~MotorVehicle();
+	}
 }

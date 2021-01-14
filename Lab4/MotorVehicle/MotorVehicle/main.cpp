@@ -3,7 +3,7 @@
 #include <vector>
 #include "motorVehicle.h"
 
-void engineMenu(VehicleLists lists) {
+void engineMenu(VehicleLists* lists) {
 	char input;
 	bool inMenu = true;
 	while (inMenu) {
@@ -13,18 +13,18 @@ void engineMenu(VehicleLists lists) {
 		switch (input)
 		{
 		case '1':
-			lists.addEngine();
+			lists->addEngine();
 			break;
 		case '2':
-			lists.printEngineList();
+			lists->printEngineList();
 			break;
 		case '3':
-			lists.printEngineList();
-			lists.changeEngine();
+			lists->printEngineList();
+			lists->changeEngine();
 			break;
 		case '4':
-			lists.printEngineList();
-			lists.deleteEngine();
+			lists->printEngineList();
+			lists->deleteEngine();
 			break;
 		case '0':
 		case '\0':
@@ -36,7 +36,7 @@ void engineMenu(VehicleLists lists) {
 	}
 }
 
-void bodyMenu(VehicleLists lists) {
+void bodyMenu(VehicleLists* lists) {
 	char input;
 	bool inMenu = true;
 	while (inMenu) {
@@ -46,18 +46,18 @@ void bodyMenu(VehicleLists lists) {
 		switch (input)
 		{
 		case '1':
-			lists.addBody();
+			lists->addBody();
 			break;
 		case '2':
-			lists.printBodyList();
+			lists->printBodyList();
 			break;
 		case '3':
-			lists.printBodyList();
-			lists.changeBody();
+			lists->printBodyList();
+			lists->changeBody();
 			break;
 		case '4':
-			lists.printBodyList();
-			lists.deleteBody();
+			lists->printBodyList();
+			lists->deleteBody();
 			break;
 		case '0':
 		case '\0':
@@ -69,7 +69,7 @@ void bodyMenu(VehicleLists lists) {
 	}
 }
 
-void ownerMenu(VehicleLists lists) {
+void ownerMenu(VehicleLists* lists) {
 	char input;
 	bool inMenu = true;
 	while (inMenu) {
@@ -79,18 +79,18 @@ void ownerMenu(VehicleLists lists) {
 		switch (input)
 		{
 		case '1':
-			lists.addCustomer();
+			lists->addCustomer();
 			break;
 		case '2':
-			lists.printCustomerList();
+			lists->printCustomerList();
 			break;
 		case '3':
-			lists.printCustomerList();
-			lists.changeCustomer();
+			lists->printCustomerList();
+			lists->changeCustomer();
 			break;
 		case '4':
-			lists.printCustomerList();
-			lists.deleteCustomer();
+			lists->printCustomerList();
+			lists->deleteCustomer();
 			break;
 		case '0':
 		case '\0':
@@ -102,7 +102,7 @@ void ownerMenu(VehicleLists lists) {
 	}
 }
 
-void vehicleMenu(VehicleLists lists) {
+void vehicleMenu(VehicleLists* lists) {
 	char input;
 	bool inMenu = true;
 	while (inMenu) {
@@ -112,18 +112,18 @@ void vehicleMenu(VehicleLists lists) {
 		switch (input)
 		{
 		case '1':
-			lists.addVehicle();
+			lists->addVehicle();
 			break;
 		case '2':
-			lists.printVehicleList();
+			lists->printVehicleList();
 			break;
 		case '3':
-			lists.printVehicleList();
-			lists.changeVehicle();
+			lists->printVehicleList();
+			lists->changeVehicle();
 			break;
 		case '4':
-			lists.printVehicleList();
-			lists.deleteVehicle();
+			lists->printVehicleList();
+			lists->deleteVehicle();
 			break;
 		case '0':
 		case '\0':
@@ -135,7 +135,13 @@ void vehicleMenu(VehicleLists lists) {
 	}
 }
 
-void mainMenu(VehicleLists lists) {
+void test() {
+	MotorVehicle testMotor;
+	testMotor.setTires(4);
+	testMotor.print();
+}
+
+void mainMenu(VehicleLists* lists) {
 	char input;
 	bool programOn = true;
 	while (programOn) {
@@ -156,9 +162,13 @@ void mainMenu(VehicleLists lists) {
 		case '4':
 			vehicleMenu(lists);
 			break;
+		case 't':
+			test();
+			break;
 		case '0':
-		case '\0':
+		//case '\0':
 			printf("\nGood Bye\n");
+			lists->exit();
 			programOn = false;
 			break;
 		default:
@@ -168,6 +178,17 @@ void mainMenu(VehicleLists lists) {
 }
 
 int main(void) {
+	Engine e1(0.8, 8), e2(0.9, 6);
+	Body b1("Blue", 1.2, 0.8), b2("Green", 1.5, 1.7);
+	Person p1("Kalle", "Frö 8", false), p2("Sven", "Gatangatan 3", true);
+	//MotorVehicle m1(e1, b1, p1, 4, "Kool Kar");
 	VehicleLists lists;
-	mainMenu(lists);
+	lists.engineList.push_back(e1);
+	lists.engineList.push_back(e2);
+	lists.bodyList.push_back(b1);
+	lists.bodyList.push_back(b2);
+	lists.ownerList.push_back(p1);
+	lists.ownerList.push_back(p2);
+	//lists.MVList.push_back(m1);
+	mainMenu(&lists);
 }
