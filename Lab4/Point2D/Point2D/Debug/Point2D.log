@@ -1,0 +1,4 @@
+﻿  main.cpp
+Z:\OOP_Lab4\Lab4\Point2D\Point2D\main.cpp(76,33): warning C4305: 'argument': truncation from 'double' to 'float'
+  LINK : Z:\OOP_Lab4\Lab4\Point2D\Debug\Point2D.exe not found or not built by the last incremental link; performing full link
+  Point2D.vcxproj -> Z:\OOP_Lab4\Lab4\Point2D\Debug\Point2D.exe
